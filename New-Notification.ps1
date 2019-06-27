@@ -43,9 +43,9 @@ function OnStart() {
 #Pas besoin de paramètre, elle est suffisante à elle même
 while ($true) {
 #Verifie le service qui est en cours d'exécution et ne prend que la valeur du DisplayName
-$Verif=(Get-Service -Name ReceptNotifAdep1 -ComputerName "VM-W10-05-01"| Select-Object -ExpandProperty DisplayName)
+$Verif=(Get-Service -Name ReceptNotifAdep1 | Select-Object -ExpandProperty DisplayName)
 #Phrase pour voir si la boucle à bien lieu
-Write-Host "Here we go again !"
+#Write-Host "Here we go again !"
 #Vérifie sur le Display name si le nom du service à été modifié ou non
 if($Verif -notlike "ADEPNotif1"){
 #Si oui, alors le format à du changer en Titre:XXX et Body:XXX , la regex suivant permet de 
@@ -54,15 +54,16 @@ $Verif -match '^Titre:(?<a>.+)\sBody:(?<b>.+)'
 $Titre=$Matches.a
 $Body=$Matches.b
 #Pour le débug
-Write-Host $Titre
-Write-Host $Body   
+#Write-Host $Titre
+#Write-Host $Body   
 #Lance la fonction pour faire une notification sur le poste local.
 NewBox -Title $Titre -Body $Body
 }
-
+#On sleep un temps déterminé, pour éviter une loop trop répétitive 
 Start-Sleep -Seconds 1
+#Et on vérifie que le DisplayName est changé pour éviter de spam le changement
 if($Verif -notlike "ADEPNotif1"){
-Set-Service -ComputerName "VM-W10-05-01" -Name ReceptNotifAdep1 -DisplayName "ADEPNotif1" 
+Set-Service -Name ReceptNotifAdep1 -DisplayName "ADEPNotif1" 
 }}}
 
 OnStart
