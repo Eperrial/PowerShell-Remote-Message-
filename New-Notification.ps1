@@ -1,12 +1,14 @@
 #Check if Module BurntToast has on the computer
 if(Get-Module -Name BurntToast ){
-
+    
 }else {
-    Write-Host "Burnt Toast n'est pas installé, veuillez demander à votre administrateur"
+    Write-Host "Burnt Toast n'est pas installe, veuillez demander e votre administrateur"
+    Import-Module -Name BurntToast
+
 }
 
 #Function to create message box with parameter
-function Parameter(){
+function NewBox(){
     Param (
          #Title of the Notification
     [string]$Title,
@@ -30,5 +32,26 @@ function Parameter(){
     #Launch Notification on the local computer 
     Submit-BTNotification -Content $content1
     }
+
+function OnStart() {
+    param ()
+
+while ($true) {
+
+$Verif=(Get-Service -Name ReceptNotifAdep1 -ComputerName "VM-W10-05-01"| Select-Object -ExpandProperty DisplayName)
+Write-Host "Shit, here we go again"
+if($Verif -notlike "ADEPNotif1"){
+$Verif -match '^Titre:(?<a>.+)\sBody:(?<b>.+)'
+$Titre=$Matches.a
+$Body=$Matches.b
+Write-Host $Titre
+Write-Host $Body   
+NewBox -Title $Titre -Body $Body
+}
+
+Start-Sleep -Seconds 1
+if($Verif -notlike "ADEPNotif1"){
+Set-Service -ComputerName "VM-W10-05-01" -Name ReceptNotifAdep1 -DisplayName "ADEPNotif1" 
+}}}
 
 
