@@ -2,13 +2,19 @@
 if(Get-Module -Name BurntToast ){
     
 }else {
-    Write-Host "Burnt Toast n'est pas installe, veuillez demander a votre administrateur"
-    Import-Module -Name BurntToast
-    if(Get-Module -Name BurntToast){
-        Write-Host "Le module a ete installe"
-    }
+    if(-not (Test-Path "C:\ADEP\PowerShell")){
+        New-Item -ItemType Directory -Name "PowerShell"
+        Invoke-WebRequest -Uri "https://github.com/Windos/BurntToast/releases/download/v0.6.2/BurntToast.zip" -OutFile "C:\temp\BunrtToast.zip"
+        Unblock-File "C:\temp\BurntToast.zip"
+        Expand-Archive "C:\temp\BurntToast.zip" -DestinationPath "C:\ADEP\PowerShell\"
+    
+    } else {
+        Invoke-WebRequest -Uri "https://github.com/Windos/BurntToast/releases/download/v0.6.2/BurntToast.zip" -OutFile "C:\ADEP\PowerShell\BurntToast.zip"
 
+    }
 }
+
+
 
 #Function to create message box with parameter
 function NewBox(){
