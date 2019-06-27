@@ -1,7 +1,8 @@
+
 #Check if Module BurntToast has on the computer
-if(Get-Module -Name BurntToast ){
-    
-}else {
+
+
+if(Get-Module -Name BurntToast ){}else {
     if(-not (Test-Path "C:\ADEP\PowerShell")){
         New-Item -ItemType Directory -Name "PowerShell"
         Invoke-WebRequest -Uri "https://github.com/Windos/BurntToast/releases/download/v0.6.2/BurntToast.zip" -OutFile "C:\temp\BunrtToast.zip"
@@ -9,8 +10,9 @@ if(Get-Module -Name BurntToast ){
         Expand-Archive "C:\temp\BurntToast.zip" -DestinationPath "C:\ADEP\PowerShell\"
     
     } else {
-        Invoke-WebRequest -Uri "https://github.com/Windos/BurntToast/releases/download/v0.6.2/BurntToast.zip" -OutFile "C:\ADEP\PowerShell\BurntToast.zip"
-
+        Invoke-WebRequest -Uri "https://github.com/Windos/BurntToast/releases/download/v0.6.2/BurntToast.zip" -OutFile "C:\temp\BunrtToast.zip"
+        Unblock-File "C:\temp\BurntToast.zip"
+        Expand-Archive "C:\temp\BurntToast.zip" -DestinationPath "C:\ADEP\PowerShell\"
     }
 }
 
@@ -64,7 +66,7 @@ $Body=$Matches.b
 NewBox -Title $Titre -Body $Body
 }
 #On sleep un temps déterminé, pour éviter une loop trop répétitive 
-Start-Sleep -Seconds 1
+Start-Sleep -Seconds 15
 #Et on vérifie que le DisplayName est changé pour éviter de spam le changement
 if($Verif -notlike "ADEPNotif1"){
 Set-Service -Name ReceptNotifAdep1 -DisplayName "ADEPNotif1" 
