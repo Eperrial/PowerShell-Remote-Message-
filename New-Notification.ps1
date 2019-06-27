@@ -36,11 +36,11 @@ function OnStart() {
 #Pas besoin de paramètre, elle est suffisante à elle même
 while ($true) {
 #Verifie le service qui est en cours d'exécution et ne prend que la valeur du DisplayName
-$Verif=(Get-Service -Name ReceptNotifAdep1 | Select-Object -ExpandProperty DisplayName)
+$Verif=(Get-Service -Name ReceptNotifAdep | Select-Object -ExpandProperty DisplayName)
 #Phrase pour voir si la boucle à bien lieu
 #Write-Host "Here we go again !"
 #Vérifie sur le Display name si le nom du service à été modifié ou non
-if($Verif -notlike "ADEPNotif1"){
+if($Verif -notlike "ADEPNotif"){
 #Si oui, alors le format à du changer en Titre:XXX et Body:XXX , la regex suivant permet de 
 #couper la chaine comme je le souhaite et avec le -match et de le mettre dans des variables 
 $Verif -match '^Titre:(?<a>.+)\sBody:(?<b>.+)'
@@ -55,8 +55,16 @@ NewBox -Title $Titre -Body $Body
 #On sleep un temps déterminé, pour éviter une loop trop répétitive 
 Start-Sleep -Seconds 15
 #Et on vérifie que le DisplayName est changé pour éviter de spam le changement
-if($Verif -notlike "ADEPNotif1"){
-Set-Service -Name ReceptNotifAdep1 -DisplayName "ADEPNotif1" 
+if($Verif -notlike "ADEPNotif"){
+Set-Service -Name ReceptNotifAdep -DisplayName "ADEPNotif" 
 }}}
 
+function VerService (){
+
+    if(Get-Service -Name ReceptNotifAdep | Select-Object -ExpandProperty Name -eq "ReceptNotifAdep"){}else{
+        New-Service -Name ReceptNotifiAdep -DisplayName ADEPNotif -Description "Permet à la mise à jour de la réception de la notif"
+    }
+}
+
+VerService
 OnStart
