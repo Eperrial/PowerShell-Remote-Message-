@@ -51,13 +51,12 @@ $Body=$Matches.b
 #Write-Host $Body   
 #Lance la fonction pour faire une notification sur le poste local.
 NewBox -Title $Titre -Body $Body
+Start-Sleep -Seconds 25
 }
+
+Start-Sleep -Seconds 15 
 #On sleep un temps déterminé, pour éviter une loop trop répétitive 
-Start-Sleep -Seconds 35
-#Et on vérifie que le DisplayName est changé pour éviter de spam le changement
-if($Verif -notlike "ADEPNotif"){
-Set-Service -Name ReceptNotifAdep -DisplayName "ADEPNotif" 
-}}}
+}}
 
 
 VerService

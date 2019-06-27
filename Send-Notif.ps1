@@ -4,13 +4,18 @@ function Notification () {
     Param(
         [script]$ville,
         [script]$groupe,
+        [script]$titre,
         [script]$texte
     )
-$Script:ADCheck = Recup -ville $ville -groupe $groupe 
-}
-
-
-
+    $Script:ADCheck = Recup -ville $ville -groupe $groupe 
+    Foreach($ip in $Script:ADCheck){
+    Set-Service -Name ReceptNotifAdep -ComputerName $ip -DisplayName "Titre:"+$texte+"Body:"+$titre
+    }
+    Start-Sleep -Seconds 15
+    Foreach($ip in $Script:ADCheck){
+    Set-Service -Name ReceptNotifAdep -ComputerName $ip -DisplayName "ADEPNotif"
+    }
+    }
 
 
 function Recup (){
@@ -49,5 +54,4 @@ function Recup (){
     break 
     }
     Write-Host $tab[$i]
-
     }}
