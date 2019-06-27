@@ -14,8 +14,6 @@ if(Get-Module -Name BurntToast ){
     }
 }
 
-
-
 #Function to create message box with parameter
 function NewBox(){
     Param (
