@@ -53,18 +53,12 @@ $Body=$Matches.b
 NewBox -Title $Titre -Body $Body
 }
 #On sleep un temps déterminé, pour éviter une loop trop répétitive 
-Start-Sleep -Seconds 15
+Start-Sleep -Seconds 35
 #Et on vérifie que le DisplayName est changé pour éviter de spam le changement
 if($Verif -notlike "ADEPNotif"){
 Set-Service -Name ReceptNotifAdep -DisplayName "ADEPNotif" 
 }}}
 
-function VerService (){
-
-    if(Get-Service -Name ReceptNotifAdep | Select-Object -ExpandProperty Name -eq "ReceptNotifAdep"){}else{
-        New-Service -Name ReceptNotifiAdep -DisplayName ADEPNotif -Description "Permet à la mise à jour de la réception de la notif"
-    }
-}
 
 VerService
 OnStart
