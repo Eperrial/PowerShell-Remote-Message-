@@ -1,18 +1,16 @@
-
 #Check if Module BurntToast has on the computer
-
-
 if(Get-Module -Name BurntToast ){}else {
+    
     if(-not (Test-Path "C:\ADEP\PowerShell")){
         New-Item -ItemType Directory -Name "PowerShell"
         Invoke-WebRequest -Uri "https://github.com/Windos/BurntToast/releases/download/v0.6.2/BurntToast.zip" -OutFile "C:\temp\BunrtToast.zip"
         Unblock-File "C:\temp\BurntToast.zip"
-        Expand-Archive "C:\temp\BurntToast.zip" -DestinationPath "C:\ADEP\PowerShell\"
+        Expand-Archive "C:\temp\BurntToast.zip" -DestinationPath "C:\Users\"+$env:USERNAME+"\Documents\WindowsPowerShell\modules\BurntToast"
     
     } else {
         Invoke-WebRequest -Uri "https://github.com/Windos/BurntToast/releases/download/v0.6.2/BurntToast.zip" -OutFile "C:\temp\BunrtToast.zip"
         Unblock-File "C:\temp\BurntToast.zip"
-        Expand-Archive "C:\temp\BurntToast.zip" -DestinationPath "C:\ADEP\PowerShell\"
+        Expand-Archive "C:\temp\BurntToast.zip" -DestinationPath "C:\Users\"+$env:USERNAME+"\Documents\WindowsPowerShell\modules\BurntToast"
     }
 }
 
