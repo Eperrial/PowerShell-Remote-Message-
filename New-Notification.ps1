@@ -2,8 +2,11 @@
 if(Get-Module -Name BurntToast ){
     
 }else {
-    Write-Host "Burnt Toast n'est pas installe, veuillez demander e votre administrateur"
+    Write-Host "Burnt Toast n'est pas installe, veuillez demander a votre administrateur"
     Import-Module -Name BurntToast
+    if(Get-Module -Name BurntToast){
+        Write-Host "Le module a ete installe"
+    }
 
 }
 
@@ -33,19 +36,27 @@ function NewBox(){
     Submit-BTNotification -Content $content1
     }
 
+
+#Fonction qui va boucler à l'infini pour lire le descriptif de son service
 function OnStart() {
     param ()
-
+#Pas besoin de paramètre, elle est suffisante à elle même
 while ($true) {
-
+#Verifie le service qui est en cours d'exécution et ne prend que la valeur du DisplayName
 $Verif=(Get-Service -Name ReceptNotifAdep1 -ComputerName "VM-W10-05-01"| Select-Object -ExpandProperty DisplayName)
-Write-Host "Shit, here we go again"
+#Phrase pour voir si la boucle à bien lieu
+Write-Host "Here we go again !"
+#Vérifie sur le Display name si le nom du service à été modifié ou non
 if($Verif -notlike "ADEPNotif1"){
+#Si oui, alors le format à du changer en Titre:XXX et Body:XXX , la regex suivant permet de 
+#couper la chaine comme je le souhaite et avec le -match et de le mettre dans des variables 
 $Verif -match '^Titre:(?<a>.+)\sBody:(?<b>.+)'
 $Titre=$Matches.a
 $Body=$Matches.b
+#Pour le débug
 Write-Host $Titre
 Write-Host $Body   
+#Lance la fonction pour faire une notification sur le poste local.
 NewBox -Title $Titre -Body $Body
 }
 
@@ -54,4 +65,4 @@ if($Verif -notlike "ADEPNotif1"){
 Set-Service -ComputerName "VM-W10-05-01" -Name ReceptNotifAdep1 -DisplayName "ADEPNotif1" 
 }}}
 
-
+OnStart
