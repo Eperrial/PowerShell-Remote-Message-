@@ -59,5 +59,4 @@ Start-Sleep -Seconds 15
 }}
 
 
-VerService
 OnStart
