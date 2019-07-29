@@ -7,8 +7,7 @@ function Unzip {
 #Check if Module BurntToast has on the computer
 if(Get-Module -Name BurntToast )
 {
-    start-process PowerShell.exe -arg "C:\ADEP\PowerShell\New-Notifications.ps1" -WindowStyle Hidden 
-    Write-Host "1"
+    start-process PowerShell.exe -arg "C:\ADEP\PowerShell\New-Notification.ps1" -WindowStyle Hidden 
 }
 else 
 {
@@ -24,7 +23,6 @@ Remove-Item "C:\Users\$user\Documents\WindowsPowershell\modules\BurntToast.zip"
 Import-Module -Name BurntToast
 if (Get-Module -Name BurntToast)
 {
-    start-process PowerShell.exe -arg "C:\ADEP\PowerShell\New-Notifications.ps1" -WindowStyle Hidden 
-    Write-Host "2"
+    start-process PowerShell.exe -arg "C:\ADEP\PowerShell\New-Notification.ps1" -WindowStyle Hidden 
 }
 }
