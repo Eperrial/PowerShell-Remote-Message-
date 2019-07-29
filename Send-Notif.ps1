@@ -9,7 +9,7 @@ function Notification () {
     )
     $Script:ADCheck = Recup -ville $ville -groupe $groupe 
     Foreach($ip in $Script:ADCheck){
-    Set-Service -Name ReceptNotifAdep -ComputerName $ip -DisplayName "Titre:"+$texte+"Body:"+$titre
+    Set-Service -Name ReceptNotifAdep -ComputerName $ip -DisplayName "Titre:"+$titre+"Body:"+$texte
     }
     Start-Sleep -Seconds 15
     Foreach($ip in $Script:ADCheck){
@@ -38,12 +38,11 @@ function Recup (){
     Write-Host groupe : $groupe
 
     #Va chercher dans l'AD les @IP de chaque ordinateurs étant dans la hierachie : computeurs,ADEP,adep,local
-    $Script:ADCheck = @(Get-ADComputer -filter "*" -Properties IPv4address -SearchBase "$groupe $ville OU=COMPUTERS,OU=ADEP,DC=adep,DC=local" |Where-Object {$_.ipv4address -and $_.Name} |  Select-Object -Property ipv4address, Name)
+    $Script:ADCheck = @(Get-ADComputer -filter "*" -Properties IPv4address -SearchBase "$groupe $ville OU=COMPUTERS,OU=ADEP,DC=adep,DC=local" |Where-Object {$_.ipv4address} |  Select-Object -ExpandProperty ipv4address)
 
     #Fait sortir $ADCheck de la fonction
     return $Script:ADCheck
     }
-
     #Fonction pour afficher
     function Afficher ($tab){
 

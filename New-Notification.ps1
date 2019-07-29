@@ -1,8 +1,3 @@
-#Check if Module BurntToast has on the computer
-if(Get-Module -Name BurntToast ){}else {
-Exit  
-}
-
 #Function to create message box with parameter
 function NewBox(){
     Param (
@@ -14,19 +9,20 @@ function NewBox(){
     [string]$signature
     )
     #Initiate some $var to Text in Notification
-    $Text1  = New-BTText -Text $Title
-    $Text2 = New-BTText -Text $Body
+    $Text  = New-BTText -Text $Title
+    $Text0 = New-BTText -Text $Body
     #Set image to the local machine
-    $image1 = New-BTImage -Source 'C:\ADEP\icone-adep.ico' -AppLogoOverride -Crop Circle
+    $image = New-BTImage -Source 'C:\ADEP\icone-adep.ico' -AppLogoOverride -Crop Circle
     #Set Audio with Event Default by Windows
-    $Audio1 = New-BTAudio -Source "ms-winsoundevent:Notification.Default"
+    $Audio = New-BTAudio -Source "ms-winsoundevent:Notification.Default"
+    $Id= New-BTAppId -AppId 'Informatique'
     #Make Burned Toast 
-    $binding1 = New-BTBinding -Children $Text1, $Text2 -AppLogoOverride $image1
-    $visual1 = New-BTVisual -BindingGeneric $binding1
+    $binding = New-BTBinding -Children $Text, $Text0 -AppLogoOverride $image
+    $visual = New-BTVisual -BindingGeneric $binding
     #Use Scripts environnement for later 
-    $Script:content1 = New-BTContent -Visual $visual1 -Audio $Audio1
+    $Script:content = New-BTContent -Visual $visual -Audio $Audio
     #Launch Notification on the local computer 
-    Submit-BTNotification -Content $content1
+    Submit-BTNotification -Content $Script:content 
     }
 
 
@@ -58,5 +54,5 @@ Start-Sleep -Seconds 15
 #On sleep un temps déterminé, pour éviter une loop trop répétitive 
 }}
 
-
 OnStart
+
