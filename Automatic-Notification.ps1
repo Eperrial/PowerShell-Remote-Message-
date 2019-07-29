@@ -4,8 +4,21 @@ function Unzip {
 	[System.IO.Compression.ZipFile]::ExtractToDirectory( $ziparchive, $extractpath )
 }
 
+
+if(Get-Service -Name ReceptAdepNotif)
+{
+if(Get-Service -Name ReceptAdepNotif |Select-Object -ExpandProperty DisplayName -Notlike ADEPNotif)
+{
+    Set-Service -Name ReceptAdepNotif -DisplayName ADEPNotif
+}
+}
+else 
+{
+New-Service -Name ReceptAdepNotif -DisplayName ADEPNotif -BinaryPathName "1"
+}
+
 #Check if Module BurntToast has on the computer
-if(Get-Module -Name BurntToast )
+if(Get-Module -Name BurntToast -and Get-Service -Name ReceptAdepNotif)
 {
     start-process PowerShell.exe -arg "C:\ADEP\PowerShell\New-Notification.ps1" -WindowStyle Hidden 
 }
