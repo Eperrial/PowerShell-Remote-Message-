@@ -2,21 +2,26 @@
 
 function Notification () {
     Param(
-        [script]$ville,
-        [script]$groupe,
-        [script]$titre,
-        [script]$texte
+        [string]$ville,
+        [string]$groupe,
+        [string]$titre,
+        [string]$texte
     )
     $Script:ADCheck = Recup -ville $ville -groupe $groupe 
-    Foreach($ip in $Script:ADCheck){
-    Set-Service -Name ReceptNotifAdep -ComputerName $ip -DisplayName "Titre:"+$titre+"Body:"+$texte
+    Try{
+        Foreach($ip in $Script:ADCheck){
+        Set-Service -Name ReceptNotifAdep -ComputerName $ip -DisplayName "Titre:"+$titre+"Body:"+$texte
+        }
     }
+    catch{}
     Start-Sleep -Seconds 15
-    Foreach($ip in $Script:ADCheck){
-    Set-Service -Name ReceptNotifAdep -ComputerName $ip -DisplayName "ADEPNotif"
+    Try{
+        Foreach($ip in $Script:ADCheck){
+        Set-Service -Name ReceptNotifAdep -ComputerName $ip -DisplayName "ADEPNotif"
+        }
     }
-    }
-
+    catch{}
+}
 
 function Recup (){
     Param(
@@ -54,3 +59,12 @@ function Recup (){
     }
     Write-Host $tab[$i]
     }}
+
+Write-Host ""
+$script:ville= Read-Host "Entrez la ville que vous souhaitez viser (non obligatoire)"
+if($script:ville){
+$groupe= Read-Host "Vous pouvez entrer le deuxième argument pour completer le chemin dans l'AD (non obligatoire)"
+}
+$titre= Read-Host "Le titre de la notification"
+$texte= Read-Host "Le corps de texte de la notification"
+Notification -ville $script:ville -groupe $groupe -titre $titre -texte $texte
