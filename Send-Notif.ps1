@@ -6,16 +6,18 @@ function Notification (){
         [string]$titre,
         [string]$texte
     )
-    $Script:ADCheck = Recup -ville $ville -groupe $groupe 
+    $Script:TableauFinal = Recup -ville $ville -groupe $groupe 
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     Try
     {
-        Foreach($ip in $Script:ADCheck){
-            Write-Host "OUI : $ip"
+        Foreach($ip in $Script:TableauFinal){
         Set-Service -Name ReceptNotifAdep -ComputerName $ip -DisplayName "Titre:"+$titre+"Body:"+$texte
+        Write-Host "OUI : $ip"
         }
     }
-    catch{}
+    catch{
+       Write-Host "ALED"
+    }
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     for($i=0;$i -le 15;$i++)
     {
@@ -26,9 +28,9 @@ function Notification (){
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     Try
     {
-        Foreach($ip in $Script:ADCheck){
-            Write-Host "NON : $ip"
+        Foreach($ip in $Script:TableauFinal){
         Set-Service -Name ReceptNotifAdep -ComputerName $ip -DisplayName "ADEPNotif"
+        Write-Host "NON : $ip"
         }
     }
     catch{}
@@ -49,9 +51,28 @@ function Recup (){
     Write-Host ville : $ville
     Write-Host groupe : $groupe
     #Va chercher dans l'AD les @IP de chaque ordinateurs étant dans la hierachie : computeurs,ADEP,adep,local
-    $Script:ADCheck = @(Get-ADComputer -filter "*" -Properties IPv4address -SearchBase "$groupe $ville OU=COMPUTERS,OU=ADEP,DC=adep,DC=local" |Where-Object {$_.ipv4address} |  Select-Object -ExpandProperty ipv4address)
+    $ADCheck = @(Get-ADComputer -filter "*" -Properties IPv4address -SearchBase "$groupe $ville OU=COMPUTERS,OU=ADEP,DC=adep,DC=local" |Where-Object {$_.ipv4address} |  Select-Object -ExpandProperty ipv4address)
+    $ADCheck += "fin"
+    $Script:TableauFinal = @()
+    $Script:TableauFaux = @()
+    for($i=0;$ADCheck[$i] -notlike "fin" ;$i++){
+        if(Test-NetConnection $ADCheck[$i] | Select-Object -ExpandProperty PingSucceeded)
+        {
+            Write-Host "Ping sur " -NoNewline
+            Write-Host $ADCheck[$i] -NoNewline
+            Write-Host " : Reussi" 
+            $Script:TableauFinal += $ADCheck[$i]
+        }
+        else
+        {
+            Write-Host "Ping sur " -NoNewline
+            Write-Host $ADCheck[$i] -NoNewline
+            Write-Host " : Echoue" 
+            $Script:TableauFaux += $ADCheck[$i]
+        }
+    }
     #Fait sortir $ADCheck de la fonction
-    return $Script:ADCheck
+    return $Script:TableauFinal
 }
 
 $ville= Read-Host "Entrez la ville que vous souhaitez viser (non obligatoire)"
@@ -60,3 +81,7 @@ if($ville)
 $titre= Read-Host "Le titre de la notification"
 $texte= Read-Host "Le corps de texte de la notification"
 Notification -ville $ville -groupe $groupe -titre $titre -texte $texte
+
+Write-Host "/////////////////////////////////////////////////////"
+Write-Host "Voici les adresses IP qui n'ont pas repondu au ping "
+$Script:TableauFaux
