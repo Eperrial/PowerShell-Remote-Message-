@@ -51,7 +51,8 @@ function Recup (){
     Write-Host ville : $ville
     Write-Host groupe : $groupe
     #Va chercher dans l'AD les @IP de chaque ordinateurs étant dans la hierachie : computeurs,ADEP,adep,local
-    $ADCheck = @(Get-ADComputer -filter "*" -Properties IPv4address -SearchBase "$groupe $ville OU=COMPUTERS,OU=ADEP,DC=adep,DC=local" |Where-Object {$_.ipv4address} |  Select-Object -ExpandProperty ipv4address)
+    $ADCheck = @(Get-ADComputer -filter "*" -Properties IPv4address -SearchBase $groupe$ville"OU=COMPUTERS,OU=ADEP,DC=adep,DC=local" |Where-Object {$_.ipv4address} |  Select-Object -ExpandProperty ipv4address)
+    Write-Host = $groupe$ville"OU=COMPUTERS,OU=ADEP,DC=adep,DC=local"
     $ADCheck += "fin"
     $Script:TableauFinal = @()
     $Script:TableauFaux = @()
@@ -85,3 +86,4 @@ Notification -ville $ville -groupe $groupe -titre $titre -texte $texte
 Write-Host "/////////////////////////////////////////////////////"
 Write-Host "Voici les adresses IP qui n'ont pas repondu au ping "
 $Script:TableauFaux
+Write-Host "/////////////////////////////////////////////////////"
