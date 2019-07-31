@@ -56,13 +56,28 @@ function Recup (){
     $ADCheck += "fin"
     $Script:TableauFinal = @()
     $Script:TableauFaux = @()
-    for($i=0;$ADCheck[$i] -notlike "fin" ;$i++){
+    for($i=0;$ADCheck[$i] -notlike "fin" ;$i++)
+    {
         if(Test-NetConnection $ADCheck[$i] | Select-Object -ExpandProperty PingSucceeded)
         {
             Write-Host "Ping sur " -NoNewline
             Write-Host $ADCheck[$i] -NoNewline
             Write-Host " : Reussi" 
             $Script:TableauFinal += $ADCheck[$i]
+            try {
+                
+                if(Get-Service -Name ReceptAdepNotif)
+                {
+                Write-Debug "L'ordinateur d'ip :"
+                Write-Debug $ADCheck[$i]
+                Write-Debug "à bien reussi le test du ping et du service"
+                }
+                else
+                {
+                Write-Debug "L'ordinateur d'ip : $i à échoué dans le test du service mais est accéssible !"    
+                }
+            }
+            catch{}
         }
         else
         {
