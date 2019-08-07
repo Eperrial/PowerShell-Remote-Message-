@@ -15,7 +15,6 @@ function NewBox(){
     $image = New-BTImage -Source 'C:\ADEP\icone-adep.ico' -AppLogoOverride -Crop Circle
     #Set Audio with Event Default by Windows
     $Audio = New-BTAudio -Source "ms-winsoundevent:Notification.Default"
-    $Id= New-BTAppId -AppId 'Informatique'
     #Make Burned Toast 
     $binding = New-BTBinding -Children $Text, $Text0 -AppLogoOverride $image
     $visual = New-BTVisual -BindingGeneric $binding
